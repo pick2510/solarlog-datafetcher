@@ -64,8 +64,6 @@ sub getData {
         $progress++;
     }
     @content = reverse @content;
-
-    #    @content = sort @content;
 }
 
 sub generateCSVHeaderForEachInv {
