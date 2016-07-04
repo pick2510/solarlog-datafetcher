@@ -29,7 +29,7 @@ my $pvname;
 my %invdata;
 my $base_file = "base_vars.js";
 my $base_vars_url =
-  "http://clevergie.solarlog-web.ch/api?access=iphone&file=%s&sn=%s&pwd=%s";
+    "http://clevergie.solarlog-web.ch/api?access=iphone&file=%s&sn=%s&pwd=%s";
 
 # Example Config
 
@@ -112,10 +112,11 @@ sub parseBaseVars {
     say "Working on: $pvname ";
     say "==============================================================";
     @invlist = grep( /^WRInfo/, @baselist );
-    my $invcountline = join( "", grep( /var\sWRInfo=new\sArray/, @baselist ) );
+    my $invcountline =
+        join( "", grep( /var\sWRInfo=new\sArray/, @baselist ) );
     $invcount = $&
-      if ( $invcountline =~ /\d+/ )
-      or die "ERROR, No Inverter(s) found!";
+        if ( $invcountline =~ /\d+/ )
+        or die "ERROR, No Inverter(s) found!";
     say "==============================================================";
     say "Found $invcount Inverter(s)";
     say "==============================================================";
@@ -130,17 +131,17 @@ sub parseInverters {
         say "Parsing Inverter ", $i + 1;
         my $typestring = qr/(?<=WRInfo\[$i\]\=new\sArray\(\")[\w\s-]*/;
         my $stringnamestring =
-          qr/(?<=WRInfo\[$i\]\[6\]\=new\sArray\(\")[\w\s,\"]*/;
+            qr/(?<=WRInfo\[$i\]\[6\]\=new\sArray\(\")[\w\s,\"]*/;
         my $stringcountstring =
-          qr/(?<=WRInfo\[$i\]\[7\]\=new\sArray\()[\w\s,]*/;
+            qr/(?<=WRInfo\[$i\]\[7\]\=new\sArray\()[\w\s,]*/;
         $invdata{$i}{Name} = $& if ( $flatlist =~ $typestring );
         my $stringnames;
         $stringnames = $& if ( $flatlist =~ $stringnamestring );
         $stringnames =~ s/\"//g;
         $invdata{$i}{Stringnames} =
-          [ split( /\,/, $stringnames ) ];
+            [ split( /\,/, $stringnames ) ];
         $invdata{$i}{Count} = split( /\,/, $& )
-          if ( $flatlist =~ $stringcountstring );
+            if ( $flatlist =~ $stringcountstring );
         $stringcount += $invdata{$i}{Count};    #
     }
     print Dumper \%invdata if $debug == 1;
@@ -156,15 +157,14 @@ sub splitContent {
         @listofvalues = split( /\|/, $line );
         foreach my $i ( 0 .. $invcount - 1 ) {
             my $csvline =
-              $listofvalues[0] . ";" . $listofvalues[ $i + 1 ] . "\n";
+                $listofvalues[0] . ";" . $listofvalues[ $i + 1 ] . "\n";
             push @{ $invdata{$i}{Data} }, $csvline;
         }
     }
 }
 
 sub writeCSV {
-    $pvname =~ s/\s+//g;
-    $pvname =~ s/\"+//g;
+    $pvname =~ s/[^A-Za-z0-9.-]//g;
     foreach my $i ( 0 .. $invcount - 1 ) {
         my $filename = $pvname . "_Inverter" . ( $i + 1 ) . ".csv";
         utf8::encode($filename);
@@ -246,9 +246,9 @@ sub main {
     parseDates;
     say "==============================================================";
     say "Ok, I try to read data from "
-      . $startdate->dmy
-      . " until "
-      . $enddate->dmy;
+        . $startdate->dmy
+        . " until "
+        . $enddate->dmy;
     say "==============================================================";
     parseBaseVars;
     parseInverters;
