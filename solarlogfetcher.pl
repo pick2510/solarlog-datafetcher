@@ -149,6 +149,7 @@ sub parseInverters {
 }
 
 sub splitContent {
+    my $warnflag=0;
     foreach my $i ( 0 .. $invcount - 1 ) {
         $invdata{$i}{Data} = [];
     }
@@ -156,8 +157,19 @@ sub splitContent {
         my @listofvalues;
         @listofvalues = split( /\|/, $line );
         foreach my $i ( 0 .. $invcount - 1 ) {
-            my $csvline =
-                $listofvalues[0] . ";" . $listofvalues[ $i + 1 ] . "\n";
+            my $csvline;
+            if ( defined( $listofvalues[ $i + 1 ] ) ) {
+                $csvline =
+                    $listofvalues[0] . ";" . $listofvalues[ $i + 1 ] . "\n";
+            }
+            elsif($warnflag==0){
+                warn "Data of Inverter " , $i + 1, " is not defined. Maybe no data?";
+                $csvline = $listofvalues[0] . ";undef;" . "\n";
+                $warnflag++;
+            }
+            else {
+                $csvline = $listofvalues[0] . ";undef;" . "\n";
+            }
             push @{ $invdata{$i}{Data} }, $csvline;
         }
     }
@@ -168,9 +180,9 @@ sub writeCSV {
     foreach my $i ( 0 .. $invcount - 1 ) {
         my $filename = $pvname . "_Inverter" . ( $i + 1 ) . ".csv";
         utf8::encode($filename);
-        my $fh = FileHandle->new($filename, "w");
-        $fh->print($invdata{$i}{Header});
-        $fh->print(@{ $invdata{$i}{Data}});
+        my $fh = FileHandle->new( $filename, "w" );
+        $fh->print( $invdata{$i}{Header} );
+        $fh->print( @{ $invdata{$i}{Data} } );
         $fh->close;
     }
 }
