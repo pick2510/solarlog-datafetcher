@@ -168,10 +168,10 @@ sub writeCSV {
     foreach my $i ( 0 .. $invcount - 1 ) {
         my $filename = $pvname . "_Inverter" . ( $i + 1 ) . ".csv";
         utf8::encode($filename);
-        open my $fh, ">", $filename or die "Can't open < $filename: $!";
-        print $fh $invdata{$i}{Header};
-        print $fh @{ $invdata{$i}{Data} };
-        close $fh;
+        my $fh = FileHandle->new($filename, "w");
+        $fh->print($invdata{$i}{Header});
+        $fh->print(@{ $invdata{$i}{Data}});
+        $fh->close;
     }
 }
 
