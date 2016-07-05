@@ -5,6 +5,7 @@ use Getopt::Std;
 use Config::General;
 use HTTP::Tiny;
 use FileHandle;
+use Encode qw(encode);
 use Time::Piece;
 use Time::Seconds;
 use utf8;
@@ -177,10 +178,10 @@ sub splitContent {
 }
 
 sub writeCSV {
-    $pvname =~ s/[^A-Za-z0-9.-]//g;
+    $pvname =~ s/[^A-Za-z0-9.-äöüéè]//g;
     foreach my $i ( 0 .. $invcount - 1 ) {
         my $filename = $pvname . "_Inverter" . ( $i + 1 ) . ".csv";
-        utf8::encode($filename);
+        encode('latin1', $filename);
         my $fh = FileHandle->new( $filename, "w" );
         $fh->print( $invdata{$i}{Header} );
         $fh->print( @{ $invdata{$i}{Data} } );
