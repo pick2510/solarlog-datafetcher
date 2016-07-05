@@ -82,8 +82,7 @@ sub generateCSVHeaderForEachInv {
             $headerstring .= ";" if $string < ( $invdata{$i}{Count} );
         }
         $invdata{$i}{Header} = $headerstring . "\n";
-        $invdata{$i}{Data}   = [];
-        say $invdata{$i}{Header};
+        say $invdata{$i}{Header} if $debug == 1;
 
     }
 
@@ -150,6 +149,9 @@ sub parseInverters {
 }
 
 sub splitContent {
+    foreach my $i ( 0 .. $invcount - 1 ) {
+        $invdata{$i}{Data} = [];
+    }
     foreach my $line (@content) {
         my @listofvalues;
         @listofvalues = split( /\|/, $line );
