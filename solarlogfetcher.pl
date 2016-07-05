@@ -74,11 +74,11 @@ sub generateCSVHeaderForEachInv {
         my $inv          = $i + 1;
         my $headerstring = "Date/Time;PAC Inv $inv [W];";
         foreach my $string ( 1 .. $invdata{$i}{Count} ) {
-            $headerstring .= "PDC Inv $inv  String $string [W];";
+            $headerstring .= "PDC Inv $inv String $string [W];";
         }
         $headerstring .= "Tagesertrag Inv $inv [Wh];";
         foreach my $string ( 1 .. $invdata{$i}{Count} ) {
-            $headerstring .= "UDC Inv $inv  String $string [V]";
+            $headerstring .= "UDC Inv $inv String $string [V]";
             $headerstring .= ";" if $string < ( $invdata{$i}{Count} );
         }
         $invdata{$i}{Header} = $headerstring . "\n";
