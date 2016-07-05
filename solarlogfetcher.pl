@@ -149,7 +149,7 @@ sub parseInverters {
 }
 
 sub splitContent {
-    my $warnflag=0;
+    my $warnflag = 0;
     foreach my $i ( 0 .. $invcount - 1 ) {
         $invdata{$i}{Data} = [];
     }
@@ -162,8 +162,9 @@ sub splitContent {
                 $csvline =
                     $listofvalues[0] . ";" . $listofvalues[ $i + 1 ] . "\n";
             }
-            elsif($warnflag==0){
-                warn "Data of Inverter " , $i + 1, " is not defined. Maybe no data?";
+            elsif ( $warnflag == 0 ) {
+                warn "Data of Inverter ", $i + 1,
+                    " is not defined. Maybe no data?";
                 $csvline = $listofvalues[0] . ";undef;" . "\n";
                 $warnflag++;
             }
